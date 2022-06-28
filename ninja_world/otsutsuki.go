@@ -1,6 +1,6 @@
 package ninja_world
 
-const INITIALENERGY = 10
+const INITIALENERGY = 10000
 
 type OtsutsukiInterface interface {
 	updateOtsutsuki(village *Village) *Otsutsuki
