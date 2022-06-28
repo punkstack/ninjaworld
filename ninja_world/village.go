@@ -5,6 +5,16 @@ import (
 	"github.com/punkstack/ninjaworld/ninja_world/utils"
 )
 
+type VillageInterface interface {
+	SetVillageDestroyed()
+	AddNeighbour(direction *utils.Direction, village Village) error
+	mapCardinalVillages()
+	AddOtsutsuki(otsutsuki Otsutsuki) *Village
+	AreNeighboursAvailable()
+	GetRandomNeighbourVillage() Village
+	RemoveOtsutsuki() *Village
+}
+
 type Village struct {
 	name        string
 	neighbours  map[utils.Direction]Village
@@ -23,7 +33,7 @@ func NewVillage(name string) *Village {
 
 func (v *Village) SetVillageDestroyed() {
 	v.isDestroyed = true
-	v.handleCardinalVillages()
+	v.mapCardinalVillages()
 }
 
 func (v *Village) AddNeighbour(direction *utils.Direction, village Village) error {
@@ -45,7 +55,7 @@ func (v *Village) AddNeighbour(direction *utils.Direction, village Village) erro
 	return nil
 }
 
-func (v *Village) handleCardinalVillages() {
+func (v *Village) mapCardinalVillages() {
 	for key, neighbour := range v.neighbours {
 		delete(neighbour.neighbours, *key.GetOppositeDirection())
 	}

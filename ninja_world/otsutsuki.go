@@ -2,6 +2,10 @@ package ninja_world
 
 const INITIALENERGY = 10
 
+type OtsutsukiInterface interface {
+	updateOtsutsuki(village Village) *Otsutsuki
+}
+
 type Otsutsuki struct {
 	name           string
 	isTrapped      bool
@@ -9,6 +13,8 @@ type Otsutsuki struct {
 	energy         int
 	currentVillage Village
 }
+
+var _ OtsutsukiInterface = &Otsutsuki{}
 
 func NewOtsutsuki(name string) *Otsutsuki {
 	return &Otsutsuki{

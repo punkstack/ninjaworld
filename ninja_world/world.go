@@ -2,7 +2,6 @@ package ninja_world
 
 import (
 	"fmt"
-	"github.com/punkstack/ninjaworld/ninja_world/interfaces"
 	"github.com/punkstack/ninjaworld/ninja_world/logger"
 	"github.com/punkstack/ninjaworld/ninja_world/ninja_world_errors"
 	"github.com/punkstack/ninjaworld/ninja_world/utils"
@@ -10,13 +9,27 @@ import (
 	"syreclabs.com/go/faker"
 )
 
+type WorldInterface interface {
+	AddVillage(name string) error
+	DestroyVillage(name string) error
+	GetVillage(name string) (Village, error)
+	AddOtsutsuki() error
+	GetOtsutsukies() map[string]Otsutsuki
+	GetRandomVillage() Village
+	DeployOtsutsukies()
+	ExecuteWar()
+	GetRemainingVillageString() []string
+	IsAnyOtsutsukiAlive() bool
+	MoveOtsutukies()
+}
+
 type World struct {
 	villages          map[string]Village
 	otsutsukies       map[string]Otsutsuki
 	destroyedVillages map[string]Village
 }
 
-var _ interfaces.WorldInterface = &World{}
+var _ WorldInterface = &World{}
 
 func NewWorld() *World {
 	return &World{
@@ -69,12 +82,8 @@ func (w *World) AddOtsutsuki() error {
 	}
 }
 
-func (w *World) GetOtsutsuki() map[string]Otsutsuki {
+func (w *World) GetOtsutsukies() map[string]Otsutsuki {
 	return w.otsutsukies
-}
-
-func (w *World) GetVillageByName(name string) Village {
-	return w.villages[name]
 }
 
 func (w *World) GetRandomVillage() Village {
@@ -92,7 +101,7 @@ func (w *World) GetRandomVillage() Village {
 }
 
 func (w *World) DeployOtsutsukies() {
-	for _, ots := range w.GetOtsutsuki() {
+	for _, ots := range w.GetOtsutsukies() {
 		randomVillage := w.GetRandomVillage()
 		if entry, ok := w.otsutsukies[ots.name]; ok {
 			entry.updateOtsutsuki(randomVillage)
@@ -162,7 +171,10 @@ func (w *World) MoveOtsutukies() {
 	for _, otsutsuki := range w.otsutsukies {
 		if otsutsuki.isAlive {
 			if len(otsutsuki.currentVillage.neighbours) > 0 {
-				village := w.GetVillageByName(otsutsuki.currentVillage.name)
+				village, err := w.GetVillage(otsutsuki.currentVillage.name)
+				if err != nil {
+					logger.Sugar.Error("Village not found ", err.Error())
+				}
 				randomVillage := village.GetRandomNeighbourVillage()
 				if entry, ok := w.otsutsukies[otsutsuki.name]; ok {
 					entry.updateOtsutsuki(randomVillage)
