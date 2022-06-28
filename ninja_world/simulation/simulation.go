@@ -1,7 +1,6 @@
 package simulation
 
 import (
-	"fmt"
 	"github.com/punkstack/ninjaworld/ninja_world"
 	"github.com/punkstack/ninjaworld/ninja_world/io"
 	"github.com/punkstack/ninjaworld/ninja_world/logger"
@@ -39,5 +38,8 @@ func NewSimulation(otsutsukiCount int32, inputFilename, outputFileName string) {
 func launchSimulation(ninjaWorld *ninja_world.World) {
 	ninjaWorld.DeployOtsutsukies()
 	ninjaWorld.ExecuteWar()
-	fmt.Println("asadds")
+	for ninjaWorld.IsAnyOtsutsukiAlive() {
+		ninjaWorld.MoveOtsutukies()
+		ninjaWorld.ExecuteWar()
+	}
 }

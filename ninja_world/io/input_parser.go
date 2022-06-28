@@ -2,6 +2,7 @@ package io
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/punkstack/ninjaworld/ninja_world"
 	"github.com/punkstack/ninjaworld/ninja_world/logger"
 	"github.com/punkstack/ninjaworld/ninja_world/ninja_world_errors"
@@ -79,13 +80,25 @@ func WriteResultToOutputFile(filename string, ninjaWorld *ninja_world.World) err
 		log.Fatalf("failed creating file: %s", err)
 		return err
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			fmt.Println("IO error ", err.Error())
+		}
+	}(file)
+	if err := os.Truncate(filename, 0); err != nil {
+		log.Printf("Failed to truncate: %v", err)
+	}
+
 	datawriter := bufio.NewWriter(file)
 
 	for _, data := range results {
 		_, _ = datawriter.WriteString(data + "\n")
 	}
 
-	datawriter.Flush()
+	err = datawriter.Flush()
+	if err != nil {
+		return err
+	}
 	return nil
 }

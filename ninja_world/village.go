@@ -57,10 +57,32 @@ func (v *Village) AddOtsutsuki(otsutsuki Otsutsuki) *Village {
 	return v
 }
 
-func change(a *[]Otsutsuki, ots Otsutsuki) {
-	*a = append(*a, ots)
-}
-
 func (v *Village) AreNeighboursAvailable() bool {
 	return len(v.neighbours) > 0
+}
+
+func (v *Village) GetRandomNeighbourVillage() Village {
+	randomIndex := utils.Pick(len(v.neighbours))
+
+	for key := range v.neighbours {
+		if randomIndex == 0 {
+			if entry, ok := v.neighbours[key]; ok {
+				return entry
+			}
+		}
+		randomIndex--
+	}
+
+	return Village{}
+}
+
+func (v *Village) RemoveOtsutsuki(otsutsuki Otsutsuki) *Village {
+	for idx, currentOtsutsuki := range v.otsutsukies {
+		if otsutsuki.name == currentOtsutsuki.name {
+			v.otsutsukies[idx] = v.otsutsukies[len(v.otsutsukies)-1]
+			v.otsutsukies = v.otsutsukies[:len(v.otsutsukies)-1]
+			break
+		}
+	}
+	return v
 }

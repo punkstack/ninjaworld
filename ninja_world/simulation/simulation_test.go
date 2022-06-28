@@ -7,5 +7,5 @@ import (
 
 func TestNewSimulation(t *testing.T) {
 	logger.InitializeLogger("../../simulation.json")
-	NewSimulation(4, "../../tests/input.txt", "../../tests/result.txt")
+	NewSimulation(1, "../../tests/input.txt", "../../tests/result.txt")
 }

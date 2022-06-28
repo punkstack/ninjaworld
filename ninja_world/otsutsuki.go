@@ -1,6 +1,6 @@
 package ninja_world
 
-const INITIALENERGY = 1000
+const INITIALENERGY = 10
 
 type Otsutsuki struct {
 	name           string
@@ -22,5 +22,8 @@ func NewOtsutsuki(name string) *Otsutsuki {
 func (o *Otsutsuki) updateOtsutsuki(village Village) *Otsutsuki {
 	o.energy -= 1
 	o.currentVillage = village
+	if o.energy == 0 {
+		o.isAlive = false
+	}
 	return o
 }

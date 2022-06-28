@@ -5,7 +5,7 @@ import (
 	"github.com/punkstack/ninjaworld/ninja_world/interfaces"
 	"github.com/punkstack/ninjaworld/ninja_world/logger"
 	"github.com/punkstack/ninjaworld/ninja_world/ninja_world_errors"
-	"github.com/punkstack/ninjaworld/ninja_world/rng"
+	"github.com/punkstack/ninjaworld/ninja_world/utils"
 	"strings"
 	"syreclabs.com/go/faker"
 )
@@ -78,8 +78,8 @@ func (w *World) GetVillageByName(name string) Village {
 }
 
 func (w *World) GetRandomVillage() Village {
-	randomIndex := rng.Pick(len(w.villages))
-	for key, _ := range w.villages {
+	randomIndex := utils.Pick(len(w.villages))
+	for key := range w.villages {
 		if randomIndex == 0 {
 			if entry, ok := w.villages[key]; ok {
 				return entry
@@ -130,6 +130,7 @@ func (w *World) ExecuteWar() {
 				w.destroyedVillages[village.name] = entry
 			}
 			fmt.Printf("%s is destroyed by otsutsukies %s and %s", village.name, strings.Join(otsutsukies[:len(otsutsukies)-1], `,`), otsutsukies[len(otsutsukies)-1])
+			fmt.Println()
 		}
 	}
 }
@@ -146,4 +147,36 @@ func (w *World) GetRemainingVillageString() []string {
 		}
 	}
 	return result
+}
+
+func (w *World) IsAnyOtsutsukiAlive() bool {
+	for _, otsutsuki := range w.otsutsukies {
+		if otsutsuki.isAlive {
+			return true
+		}
+	}
+	return false
+}
+
+func (w *World) MoveOtsutukies() {
+	for _, otsutsuki := range w.otsutsukies {
+		if otsutsuki.isAlive {
+			if len(otsutsuki.currentVillage.neighbours) > 0 {
+				village := w.GetVillageByName(otsutsuki.currentVillage.name)
+				randomVillage := village.GetRandomNeighbourVillage()
+				if entry, ok := w.otsutsukies[otsutsuki.name]; ok {
+					entry.updateOtsutsuki(randomVillage)
+					w.otsutsukies[otsutsuki.name] = entry
+				}
+				if entry, ok := w.villages[randomVillage.name]; ok {
+					entry.AddOtsutsuki(otsutsuki)
+					w.villages[randomVillage.name] = entry
+				}
+				if entry, ok := w.villages[village.name]; ok {
+					entry.RemoveOtsutsuki(otsutsuki)
+					w.villages[village.name] = entry
+				}
+			}
+		}
+	}
 }
