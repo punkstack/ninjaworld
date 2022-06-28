@@ -6,10 +6,10 @@ package main
 
 import (
 	"github.com/punkstack/ninjaworld/cmd"
-	"github.com/punkstack/ninjaworld/ninja_world/logger"
+	"github.com/punkstack/ninjaworld/pkg/logger"
 )
 
 func main() {
-	logger.InitializeLogger("simulation_log.json")
+	logger.InitializeLogger("logs/simulation_log.json")
 	cmd.Execute()
 }

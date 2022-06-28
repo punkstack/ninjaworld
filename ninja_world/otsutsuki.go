@@ -3,33 +3,39 @@ package ninja_world
 const INITIALENERGY = 10
 
 type OtsutsukiInterface interface {
-	updateOtsutsuki(village Village) *Otsutsuki
+	updateOtsutsuki(village *Village) *Otsutsuki
 }
 
 type Otsutsuki struct {
 	name           string
-	isTrapped      bool
 	isAlive        bool
 	energy         int
-	currentVillage Village
+	currentVillage *Village
 }
 
 var _ OtsutsukiInterface = &Otsutsuki{}
 
 func NewOtsutsuki(name string) *Otsutsuki {
 	return &Otsutsuki{
-		name:      name,
-		isAlive:   true,
-		isTrapped: false,
-		energy:    INITIALENERGY,
+		name:    name,
+		isAlive: true,
+		energy:  INITIALENERGY,
 	}
 }
 
-func (o *Otsutsuki) updateOtsutsuki(village Village) *Otsutsuki {
+// updateOtsutsuki update the status of otsutsuki
+func (o *Otsutsuki) updateOtsutsuki(village *Village) *Otsutsuki {
 	o.energy -= 1
 	o.currentVillage = village
-	if o.energy == 0 {
-		o.isAlive = false
-	}
 	return o
+}
+
+func (o *Otsutsuki) KillOtsutsuki() {
+	o.energy = 0
+	o.isAlive = false
+}
+
+// IsMovable check weather otsutsuki can move or not
+func (o *Otsutsuki) IsMovable() bool {
+	return len(o.currentVillage.neighbours) > 0 && (!o.isAlive || o.energy == 0)
 }

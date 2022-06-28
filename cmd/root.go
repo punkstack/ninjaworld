@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/punkstack/ninjaworld/ninja_world/simulation"
+	"github.com/punkstack/ninjaworld/pkg/logger"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -51,12 +52,12 @@ func init() {
 	rootCmd.Flags().StringP("output-filename", "o", "FILE NAME", "map input file name with file path")
 	rootCmd.Flags().Int32P("otsutsuki", "n", 2, "count of otsutsuki invading ninja world")
 	if err := rootCmd.MarkFlagRequired("input-filename"); err != nil {
-		fmt.Println(err)
+		logger.Sugar.Error(err)
 	}
 	if err := rootCmd.MarkFlagRequired("output-filename"); err != nil {
-		fmt.Println(err)
+		logger.Sugar.Error(err)
 	}
 	if err := rootCmd.MarkFlagRequired("otsutsuki"); err != nil {
-		fmt.Println(err)
+		logger.Sugar.Error(err)
 	}
 }

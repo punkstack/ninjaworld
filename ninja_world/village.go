@@ -2,41 +2,44 @@ package ninja_world
 
 import (
 	"github.com/punkstack/ninjaworld/ninja_world/ninja_world_errors"
-	"github.com/punkstack/ninjaworld/ninja_world/utils"
+	utils2 "github.com/punkstack/ninjaworld/pkg/utils"
 )
 
 type VillageInterface interface {
 	SetVillageDestroyed()
-	AddNeighbour(direction *utils.Direction, village Village) error
-	mapCardinalVillages()
-	AddOtsutsuki(otsutsuki Otsutsuki) *Village
-	AreNeighboursAvailable()
-	GetRandomNeighbourVillage() Village
-	RemoveOtsutsuki() *Village
+	AddNeighbour(direction *utils2.Direction, village *Village) error
+	removeAllNeighbourVillages()
+	AddOtsutsuki(otsutsuki *Otsutsuki) *Village
+	AreNeighboursAvailable() bool
+	GetRandomNeighbourVillage() *Village
+	RemoveOtsutsuki(otsutsuki *Otsutsuki) *Village
 }
 
 type Village struct {
 	name        string
-	neighbours  map[utils.Direction]Village
+	neighbours  map[utils2.Direction]*Village
 	isDestroyed bool
-	otsutsukies []Otsutsuki
+	otsutsukies []*Otsutsuki
 }
+
+var _ VillageInterface = &Village{}
 
 func NewVillage(name string) *Village {
 	return &Village{
 		name:        name,
-		neighbours:  map[utils.Direction]Village{},
+		neighbours:  map[utils2.Direction]*Village{},
 		isDestroyed: false,
-		otsutsukies: []Otsutsuki{},
+		otsutsukies: []*Otsutsuki{},
 	}
 }
 
 func (v *Village) SetVillageDestroyed() {
 	v.isDestroyed = true
-	v.mapCardinalVillages()
+	v.removeAllNeighbourVillages()
 }
 
-func (v *Village) AddNeighbour(direction *utils.Direction, village Village) error {
+// AddNeighbour adds neighbouring village with cardinal direction
+func (v *Village) AddNeighbour(direction *utils2.Direction, village *Village) error {
 	if value, exists := v.neighbours[*direction]; exists {
 		if value.name == village.name {
 			return nil
@@ -48,21 +51,22 @@ func (v *Village) AddNeighbour(direction *utils.Direction, village Village) erro
 		}
 	}
 	v.neighbours[*direction] = village
-	err := village.AddNeighbour(direction.GetOppositeDirection(), *v)
+	err := village.AddNeighbour(direction.GetOppositeDirection(), v)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (v *Village) mapCardinalVillages() {
+// removeAllNeighbourVillages linked to village
+func (v *Village) removeAllNeighbourVillages() {
 	for key, neighbour := range v.neighbours {
 		delete(neighbour.neighbours, *key.GetOppositeDirection())
 	}
 	v.neighbours = nil
 }
 
-func (v *Village) AddOtsutsuki(otsutsuki Otsutsuki) *Village {
+func (v *Village) AddOtsutsuki(otsutsuki *Otsutsuki) *Village {
 	v.otsutsukies = append(v.otsutsukies, otsutsuki)
 	return v
 }
@@ -71,9 +75,8 @@ func (v *Village) AreNeighboursAvailable() bool {
 	return len(v.neighbours) > 0
 }
 
-func (v *Village) GetRandomNeighbourVillage() Village {
-	randomIndex := utils.Pick(len(v.neighbours))
-
+func (v *Village) GetRandomNeighbourVillage() *Village {
+	randomIndex := utils2.Pick(len(v.neighbours))
 	for key := range v.neighbours {
 		if randomIndex == 0 {
 			if entry, ok := v.neighbours[key]; ok {
@@ -82,11 +85,10 @@ func (v *Village) GetRandomNeighbourVillage() Village {
 		}
 		randomIndex--
 	}
-
-	return Village{}
+	return nil
 }
 
-func (v *Village) RemoveOtsutsuki(otsutsuki Otsutsuki) *Village {
+func (v *Village) RemoveOtsutsuki(otsutsuki *Otsutsuki) *Village {
 	for idx, currentOtsutsuki := range v.otsutsukies {
 		if otsutsuki.name == currentOtsutsuki.name {
 			v.otsutsukies[idx] = v.otsutsukies[len(v.otsutsukies)-1]
