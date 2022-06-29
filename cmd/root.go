@@ -32,7 +32,11 @@ var rootCmd = &cobra.Command{
 			fmt.Println(err)
 			return
 		}
-		simulation.NewSimulation(otsutsukiCount, inputFilename, outputFilename)
+		err = simulation.NewSimulation(otsutsukiCount, inputFilename, outputFilename)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 		fmt.Println()
 	},
 }

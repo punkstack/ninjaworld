@@ -38,7 +38,7 @@ func ParseInputFile(filename string, ninjaWorld *ninja_world.World) error {
 		chunks := strings.Fields(currentRow)
 		villageName := chunks[0]
 		err = ninjaWorld.AddVillage(villageName)
-		if err != nil {
+		if err != nil && err != ninja_world_errors.VILLAGEALREADYEXISTS {
 			return err
 		}
 		village, err := ninjaWorld.GetVillageByName(villageName)

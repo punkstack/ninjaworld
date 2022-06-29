@@ -4,7 +4,6 @@ import (
 	"github.com/punkstack/ninjaworld/ninja_world"
 	"github.com/punkstack/ninjaworld/ninja_world/io"
 	"github.com/punkstack/ninjaworld/pkg/logger"
-	"os"
 )
 
 type Simulation struct {
@@ -14,20 +13,20 @@ type Simulation struct {
 // otsutsukiCount: count of aliens
 // inputFileName: pass the input map filename with full path
 // outputFilename: pass the output filename with full path where we want to store the leftover villages/*
-func NewSimulation(otsutsukiCount int32, inputFilename, outputFileName string) {
+func NewSimulation(otsutsukiCount int32, inputFilename, outputFileName string) error {
 	ninjaWorld := ninja_world.NewWorld()
 
 	err := io.ParseInputFile(inputFilename, ninjaWorld)
 	if err != nil {
 		logger.Sugar.Error(err)
-		os.Exit(1)
+		return err
 	}
 
 	for idx := 0; idx < int(otsutsukiCount); idx++ {
 		err = ninjaWorld.AddOtsutsuki()
 		if err != nil {
 			logger.Sugar.Error(err)
-			panic(err)
+			return err
 		}
 	}
 
@@ -36,13 +35,18 @@ func NewSimulation(otsutsukiCount int32, inputFilename, outputFileName string) {
 	err = io.WriteResultToOutputFile(outputFileName, ninjaWorld)
 	if err != nil {
 		logger.Sugar.Error(err)
-		os.Exit(1)
+		return err
 	}
+	return nil
 }
 
 // launchSimulation handles the execution of the ninja world simulation
 func launchSimulation(ninjaWorld *ninja_world.World) {
-	ninjaWorld.DeployOtsutsukies()
+	err := ninjaWorld.DeployOtsutsukies()
+	if err != nil {
+		logger.Sugar.Error("Error ", err.Error())
+		return
+	}
 	ninjaWorld.ExecuteWar()
 	for !ninjaWorld.HasWarEnded() {
 		ninjaWorld.MoveOtsutukies()
