@@ -187,8 +187,8 @@ func (w *World) HasWarEnded() bool {
 	// check for any movable otsutsuki
 	for _, otsutsuki := range w.otsutsukies {
 		if otsutsuki.IsMovable() {
-			return true
+			return false
 		}
 	}
-	return false
+	return true
 }

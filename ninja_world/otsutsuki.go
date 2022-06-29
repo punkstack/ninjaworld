@@ -4,6 +4,8 @@ const INITIALENERGY = 10000
 
 type OtsutsukiInterface interface {
 	updateOtsutsuki(village *Village) *Otsutsuki
+	KillOtsutsuki()
+	IsMovable() bool
 }
 
 type Otsutsuki struct {
