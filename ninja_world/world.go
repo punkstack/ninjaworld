@@ -3,7 +3,6 @@ package ninja_world
 import (
 	"fmt"
 	"github.com/punkstack/ninjaworld/ninja_world/ninja_world_errors"
-	"github.com/punkstack/ninjaworld/pkg/logger"
 	"github.com/punkstack/ninjaworld/pkg/utils"
 	"strings"
 	"syreclabs.com/go/faker"
@@ -11,13 +10,13 @@ import (
 
 type WorldInterface interface {
 	AddVillage(name string) error
-	GetVillage(name string) (*Village, error)
+	GetVillageByName(name string) (*Village, error)
 	DestroyVillage(name string) error
 	GetRandomVillage() *Village
 	GetRemainingVillageString() []string
 	AddOtsutsuki() error
 	GetOtsutsukies() map[string]*Otsutsuki
-	DeployOtsutsukies()
+	DeployOtsutsukies() error
 	ExecuteWar()
 	HasWarEnded() bool
 }
@@ -44,7 +43,7 @@ func (w *World) AddVillage(name string) error {
 		return ninja_world_errors.VILLAGEDESTROYED
 	}
 	if _, exists := w.villages[name]; exists {
-		return nil
+		return ninja_world_errors.VILLAGEALREADYEXISTS
 	} else {
 		w.villages[name] = NewVillage(name)
 	}
@@ -57,14 +56,14 @@ func (w *World) DestroyVillage(name string) error {
 	if _, exists := w.destroyedVillages[name]; exists {
 		return ninja_world_errors.VILLAGEDESTROYED
 	} else {
-		village.SetVillageDestroyed()
+		village.VillageDestroyed()
 		delete(w.villages, name)
 		w.destroyedVillages[name] = village
 	}
 	return nil
 }
 
-func (w *World) GetVillage(name string) (*Village, error) {
+func (w *World) GetVillageByName(name string) (*Village, error) {
 	if _, exists := w.villages[name]; exists {
 		return w.villages[name], nil
 	} else {
@@ -92,12 +91,10 @@ func (w *World) GetRemainingVillageString() []string {
 	result := make([]string, 0)
 	for key, value := range w.villages {
 		currentVillageStatus := key
-		if !value.isDestroyed {
-			for direction, neighbour := range value.neighbours {
-				currentVillageStatus += fmt.Sprintf(" %s=%s ", direction.String(), neighbour.name)
-			}
-			result = append(result, currentVillageStatus)
+		for direction, neighbour := range value.neighbours {
+			currentVillageStatus += fmt.Sprintf(" %s=%s ", direction.String(), neighbour.name)
 		}
+		result = append(result, currentVillageStatus)
 	}
 	return result
 }
@@ -105,7 +102,6 @@ func (w *World) GetRemainingVillageString() []string {
 // AddOtsutsuki adds a new otsutsuki to ninja world
 func (w *World) AddOtsutsuki() error {
 	otsutsukiName := faker.Name().FirstName()
-	logger.Sugar.Info("creating otsutsuki ", otsutsukiName)
 
 	// this is to maintain unique otsutsukiName
 	if _, exists := w.otsutsukies[otsutsukiName]; exists {
@@ -121,12 +117,16 @@ func (w *World) GetOtsutsukies() map[string]*Otsutsuki {
 }
 
 // DeployOtsutsukies deploys all available Otsutsukies to random villages, updates village and otsutsuki states
-func (w *World) DeployOtsutsukies() {
+func (w *World) DeployOtsutsukies() error {
+	if len(w.villages) == 0 {
+		return ninja_world_errors.NOVILLAGELEFTFOROTSUTSUKI
+	}
 	for _, ots := range w.GetOtsutsukies() {
 		randomVillage := w.GetRandomVillage()
-		ots.updateOtsutsuki(randomVillage)
+		ots.moveOtsutsuki(randomVillage)
 		randomVillage.AddOtsutsuki(ots)
 	}
+	return nil
 }
 
 // ExecuteWar checks otsutsuki presence in villages, updates village and otsutsuki status
@@ -157,22 +157,20 @@ func (w *World) ExecuteWar() {
 func (w *World) MoveOtsutukies() {
 	for _, otsutsuki := range w.otsutsukies {
 		if otsutsuki.IsMovable() {
-			if len(otsutsuki.currentVillage.neighbours) > 0 {
-				village, err := w.GetVillage(otsutsuki.currentVillage.name)
-				if err != nil {
-					panic(fmt.Sprintf("Village not found %s", err.Error()))
-				}
-				randomVillage := village.GetRandomNeighbourVillage()
-
-				// updating otsutsuki status
-				otsutsuki.updateOtsutsuki(randomVillage)
-
-				// fetching a random village and updating village otsutsukies
-				randomVillage.AddOtsutsuki(otsutsuki)
-
-				// Removing otsutsuki from current village
-				village.RemoveOtsutsuki(otsutsuki)
+			village, err := w.GetVillageByName(otsutsuki.currentVillage.name)
+			if err != nil {
+				panic(fmt.Sprintf("Village not found %s", err.Error()))
 			}
+			randomVillage := village.GetRandomNeighbourVillage()
+
+			// updating otsutsuki status
+			otsutsuki.moveOtsutsuki(randomVillage)
+
+			// fetching a random village and updating village otsutsukies
+			randomVillage.AddOtsutsuki(otsutsuki)
+
+			// Removing otsutsuki from current village
+			village.RemoveOtsutsuki(otsutsuki)
 		}
 	}
 }

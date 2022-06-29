@@ -16,8 +16,9 @@ func (err ninjaWorldErrors) Error() string {
 }
 
 var (
-	VILLAGEALREADYEXISTS = ninjaWorldErrors{msg: "village already in the world"}
-	VILLAGEDOESNOTEXISTS = ninjaWorldErrors{msg: "village doesn't exists in the world"}
-	VILLAGEDESTROYED     = ninjaWorldErrors{msg: "village is in destroyed state"}
-	VILLAGEALREADYINLINK = ninjaWorldErrors{msg: "another village is added in this direction"}
+	VILLAGEALREADYEXISTS      = ninjaWorldErrors{msg: "village already in the world"}
+	VILLAGEDOESNOTEXISTS      = ninjaWorldErrors{msg: "village doesn't exists in the world"}
+	VILLAGEDESTROYED          = ninjaWorldErrors{msg: "village is in destroyed state"}
+	VILLAGEALREADYINLINK      = ninjaWorldErrors{msg: "another village is added in this direction"}
+	NOVILLAGELEFTFOROTSUTSUKI = ninjaWorldErrors{msg: "No villages left for otsutsuki deployment"}
 )

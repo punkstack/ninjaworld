@@ -2,12 +2,12 @@ package ninja_world
 
 import (
 	"github.com/punkstack/ninjaworld/ninja_world/ninja_world_errors"
-	utils2 "github.com/punkstack/ninjaworld/pkg/utils"
+	utils "github.com/punkstack/ninjaworld/pkg/utils"
 )
 
 type VillageInterface interface {
-	SetVillageDestroyed()
-	AddNeighbour(direction *utils2.Direction, village *Village) error
+	VillageDestroyed()
+	AddNeighbour(direction *utils.Direction, village *Village) error
 	removeAllNeighbourVillages()
 	AddOtsutsuki(otsutsuki *Otsutsuki) *Village
 	AreNeighboursAvailable() bool
@@ -17,7 +17,7 @@ type VillageInterface interface {
 
 type Village struct {
 	name        string
-	neighbours  map[utils2.Direction]*Village
+	neighbours  map[utils.Direction]*Village
 	isDestroyed bool
 	otsutsukies []*Otsutsuki
 }
@@ -27,19 +27,19 @@ var _ VillageInterface = &Village{}
 func NewVillage(name string) *Village {
 	return &Village{
 		name:        name,
-		neighbours:  map[utils2.Direction]*Village{},
+		neighbours:  map[utils.Direction]*Village{},
 		isDestroyed: false,
 		otsutsukies: []*Otsutsuki{},
 	}
 }
 
-func (v *Village) SetVillageDestroyed() {
+func (v *Village) VillageDestroyed() {
 	v.isDestroyed = true
 	v.removeAllNeighbourVillages()
 }
 
 // AddNeighbour adds neighbouring village with cardinal direction
-func (v *Village) AddNeighbour(direction *utils2.Direction, village *Village) error {
+func (v *Village) AddNeighbour(direction *utils.Direction, village *Village) error {
 	if value, exists := v.neighbours[*direction]; exists {
 		if value.name == village.name {
 			return nil
@@ -63,7 +63,7 @@ func (v *Village) removeAllNeighbourVillages() {
 	for key, neighbour := range v.neighbours {
 		delete(neighbour.neighbours, *key.GetOppositeDirection())
 	}
-	v.neighbours = nil
+	v.neighbours = map[utils.Direction]*Village{}
 }
 
 func (v *Village) AddOtsutsuki(otsutsuki *Otsutsuki) *Village {
@@ -76,7 +76,10 @@ func (v *Village) AreNeighboursAvailable() bool {
 }
 
 func (v *Village) GetRandomNeighbourVillage() *Village {
-	randomIndex := utils2.Pick(len(v.neighbours))
+	if len(v.neighbours) == 0 {
+		return nil
+	}
+	randomIndex := utils.Pick(len(v.neighbours))
 	for key := range v.neighbours {
 		if randomIndex == 0 {
 			if entry, ok := v.neighbours[key]; ok {

@@ -41,21 +41,21 @@ func ParseInputFile(filename string, ninjaWorld *ninja_world.World) error {
 		if err != nil {
 			return err
 		}
-		village, err := ninjaWorld.GetVillage(villageName)
+		village, err := ninjaWorld.GetVillageByName(villageName)
 		if err != nil && err != ninja_world_errors.VILLAGEALREADYEXISTS {
 			return err
 		}
 		for idx := 1; idx < len(chunks); idx++ {
 			currentStringChunk := strings.Split(chunks[idx], "=")
 			direction, currentVillageName := currentStringChunk[0], currentStringChunk[1]
-			currentVillage, err := ninjaWorld.GetVillage(currentVillageName)
+			currentVillage, err := ninjaWorld.GetVillageByName(currentVillageName)
 			if err != nil {
 				if err.Error() == ninja_world_errors.VILLAGEDOESNOTEXISTS.Error() {
 					err = ninjaWorld.AddVillage(currentVillageName)
 					if err != nil && err != ninja_world_errors.VILLAGEALREADYEXISTS {
 						return err
 					}
-					currentVillage, err = ninjaWorld.GetVillage(currentVillageName)
+					currentVillage, err = ninjaWorld.GetVillageByName(currentVillageName)
 					if err != nil {
 						return err
 					}
