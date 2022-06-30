@@ -90,8 +90,8 @@ $ ./ninja-world-darwin -n 10 -i tests/input.txt -o tests/result.txt
 
 ## Next Steps
 
-* Improvement of I/O validation 
+* Improvement of I/O validation
 * Need more test cases to improve the test coverage
 * Need more map examples
 * Custom logger implemented but it is not upto the mark
-* CI pipelin for tests
+* CI pipeline for tests
