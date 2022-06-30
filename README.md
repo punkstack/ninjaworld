@@ -86,4 +86,12 @@ $ ./ninja-world-darwin -n 10 -i tests/input.txt -o tests/result.txt
 
 * A village and the neighbouring village are connected bidirectionally.
 
-* The initial energy of an otsutsuki is 10,000 moves and can use one move in a day, after which it will die. 
+* The initial energy of an otsutsuki is 10,000 moves and can use one move in a day, after which it will die.
+
+## Next Steps
+
+* Improvement of I/O validation 
+* Need more test cases to improve the test coverage
+* Need more map examples
+* Custom logger implemented but it is not upto the mark
+* CI pipelin for tests
