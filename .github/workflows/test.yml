@@ -12,7 +12,14 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - uses: actions/checkout@v3
-      - run: go test ./...
+      - name: Test
+        run: go test ./...
+      - name: Test coverage
+        run: total=`go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+'`
+          if (( $(echo "$total <= 50" | bc -l) )) ; then
+          echo "code coverage $total% < 50%"
+          exit 1
+          fi
 
   test-cache:
     runs-on: ubuntu-latest
