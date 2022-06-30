@@ -2,7 +2,7 @@
 
 ## Overview
 
-The goal of ninja war stimulation is to stimulate the
+The inspiration for this simulation is Naruto. The Ninja world is being attached by otsutsukies. The goal of ninja war simulation is to stimulate the
 invasion of otsutsukies on earth.
 The ninja world is segregated
 as per specific villages, and the otsutsukies are dispersed randomly on the ninja world.
