@@ -11,7 +11,7 @@ destruction of every otsutsuki in that city.
 
 ## Badges
 [![Test](https://github.com/punkstack/ninjaworld/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/punkstack/ninjaworld/actions/workflows/test.yml)
-
+[![Lint](https://github.com/punkstack/ninjaworld/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/punkstack/ninjaworld/actions/workflows/lint.yml)
 
 ## Implementation
 
