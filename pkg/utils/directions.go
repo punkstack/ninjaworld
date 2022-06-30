@@ -36,13 +36,13 @@ func GetWestCardinalDirection() *Direction {
 func GetDirectionByString(direction string) *Direction {
 	switch direction {
 	case NORTH:
-		return GetSouthCardinalDirection()
-	case SOUTH:
 		return GetNorthCardinalDirection()
+	case SOUTH:
+		return GetSouthCardinalDirection()
 	case EAST:
-		return GetWestCardinalDirection()
-	case WEST:
 		return GetEastCardinalDirection()
+	case WEST:
+		return GetWestCardinalDirection()
 	default:
 		return nil
 	}
