@@ -9,6 +9,10 @@ as per specific villages, and the otsutsukies are dispersed randomly on the ninj
 Encounter of more than one otsutsuki in a specific cities leads to destruction of city and
 destruction of every otsutsuki in that city.
 
+## Badges
+[![Test](https://github.com/punkstack/ninjaworld/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/punkstack/ninjaworld/actions/workflows/test.yml)
+
+
 ## Implementation
 
 In Ninja world, each village can have maximum four cardinal directions in which there can be a neighbouring village.
