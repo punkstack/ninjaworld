@@ -63,6 +63,6 @@ func (d *Direction) GetOppositeDirection() *Direction {
 	}
 }
 
-func (d *Direction) String() any {
+func (d *Direction) String() string {
 	return d.cardinalDirection
 }

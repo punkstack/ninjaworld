@@ -52,7 +52,7 @@ func (w *World) AddVillage(name string) error {
 
 // DestroyVillage Destroys the village and updates the required villages state
 func (w *World) DestroyVillage(name string) error {
-	village, _ := w.villages[name]
+	village := w.villages[name]
 	if _, exists := w.destroyedVillages[name]; exists {
 		return ninja_world_errors.VILLAGEDESTROYED
 	} else {

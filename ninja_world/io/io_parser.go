@@ -53,7 +53,7 @@ func ParseInputFile(filename string, ninjaWorld *ninja_world.World) error {
 				if err.Error() == ninja_world_errors.VILLAGEDOESNOTEXISTS.Error() {
 					err = ninjaWorld.AddVillage(currentVillageName)
 					if err != nil && err != ninja_world_errors.VILLAGEALREADYEXISTS {
-
+						return err
 					}
 					currentVillage, err = ninjaWorld.GetVillageByName(currentVillageName)
 					if err != nil {
