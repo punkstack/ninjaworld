@@ -25,13 +25,13 @@ Otsutsukies are randomly deployed in the villages, and if in a village more than
 destroy not only each other but also the city. And the remaining otsutsukies move randomly to the available neighbouring
 villages and repeat the same war protocol in that village.
 ### Packages
-We have used the [math/rand](https://golang.org/pkg/math/rand/) package to deploy otsutsukies randomly in the villages and also to pick neighbouring villages.
+[math/rand](https://golang.org/pkg/math/rand/) package to deploy otsutsukies randomly in the villages and also to pick neighbouring villages.
 
-We have used [Faker](https://pkg.go.dev/syreclabs.com/go/faker) for generating random otsutsuki names. 
+[Faker](https://pkg.go.dev/syreclabs.com/go/faker) for generating random otsutsuki names. 
 
-We have used [Zap loger](https://pkg.go.dev/go.uber.org/zap) for logging purpose. 
+[Zap loger](https://pkg.go.dev/go.uber.org/zap) for logging purpose. 
 
-We have used [Cobra](https://github.com/spf13/cobra) to handle command line flags. 
+[Cobra](https://github.com/spf13/cobra) to handle command line flags and validations. 
 
 ## Installation
 
@@ -66,8 +66,16 @@ Usage of ./ninja-world-darwin:
         random number used as entropy seed
 ```
 
-you can run the specific simulation by using the below command
+Run the specific simulation by using the below command
 ```bash
 $ ./ninja-world-darwin -n 10 -i tests/input.txt -o tests/result.txt   
 ```
 
+## Assumptions
+* There is no restriction in the number of otsutsukies deploying in a village. 
+
+* If a village has more than one otsutsukies are in a village, then not only the otsutsukies are destroyed but also the village.
+
+* A village and the neighbouring village are connected bidirectionally. 
+
+* The initial energy of an otsutsuki is 10,000 moves and can use one move in a day, after which it will die. 
