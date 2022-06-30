@@ -3,7 +3,7 @@ name: Hello Ninja world Job
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   Hello:
