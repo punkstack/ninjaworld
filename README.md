@@ -7,8 +7,8 @@ attacked by otsutsukies. The goal of ninja war simulation is to stimulate the
 invasion of otsutsukies on earth.
 The ninja world is segregated
 as per specific villages, and the otsutsukies are dispersed randomly on the ninja world.
-Encounter of more than one otsutsuki in a specific cities leads to destruction of city and
-destruction of every otsutsuki in that city.
+Encounter of more than one otsutsuki in a specific villages leads to destruction of village and
+destruction of every otsutsuki in that village.
 
 ## Badges
 [![Test](https://github.com/punkstack/ninjaworld/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/punkstack/ninjaworld/actions/workflows/test.yml)
@@ -27,7 +27,7 @@ where, village Foo has a neighbouring village named Bar in the north direction. 
 neighbouring village named Foo in the south direction.
 
 Otsutsukies are randomly deployed in the villages, and if in a village more than one otsutsukies are deployed, they
-destroy not only each other but also the city. And the remaining otsutsukies move randomly to the available neighbouring
+destroy not only each other but also the village. And the remaining otsutsukies move randomly to the available neighbouring
 villages and repeat the same war protocol in that village.
 
 ### Packages
@@ -69,11 +69,11 @@ make clean
 $ ./ninja-world-darwin --help
 Usage of ./ninja-world-darwin:
    -i, --input-filename string
-        input file name with file path which contains villages
+        input filename with file path which contains villages
    -o, --output-filename string
-        onput file name with file path where result of simulation is stored
+        output filename with file path where result of simulation is stored
    -n, --otsutsuki int
-        random number used as entropy seed
+        random number used as otsutsuki seed
 ```
 
 Run the specific simulation by using the below command
@@ -86,7 +86,7 @@ $ ./ninja-world-darwin -n 10 -i tests/input.txt -o tests/result.txt
 
 * There is no restriction in the number of otsutsukies deploying in a village.
 
-* If a village has more than one otsutsukies are in a village, then not only the otsutsukies are destroyed but also the
+* If a village has more than one otsutsukies, then not only the otsutsukies are destroyed but also the
   village.
 
 * A village and the neighbouring village are connected bidirectionally.
